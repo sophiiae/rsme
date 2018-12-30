@@ -7,28 +7,47 @@ Step:
 3. Convert svg into png file
 */
 
-const request = require('request');
+const request = require("request");
 
-const domParser = require('xmldom').DOMParser;
-const xpath = require('xpath');
+const domParser = require("xmldom").DOMParser;
+const xpath = require("xpath");
 const dom = new domParser();
+const d3 = require("d3");
+const sharp = require("sharp");
+const fs = require("fs");
+// const https = require('https');
+const pdfkit = require("pdfkit");
+const SVGtoPDF = require('svg-to-pdfkit');
 
-request('https://github.com/users/sophiiae/contributions', function (error, response, body) {
-
+request("https://github.com/users/sophiiae/contributions", function(
+    error,
+    response,
+    body
+    ) {
     var doc = dom.parseFromString(body);
-    var svgNode = xpath.select("(//svg[@class='js-calendar-graph-svg'])[1]", doc);
-    console.log(svgNode[0].toString());
-    var svg = svgNode[0];
+    var svgNode = xpath.select("(//svg[@class='js-calendar-graph-svg'])[1]",doc)[0];
+    var svgString = svgNode.toString();
+    // console.log(svgString);
+
+    sharp(Buffer.from(svgString))
+        .resize(1280, null, { fit: "inside" })
+        .flatten({ background: "#ffffff" })
+        .toFile("output.png");
+
+    var doc = new pdfkit();
+
+    doc.pipe(fs.createWriteStream("output.pdf"));
+    doc.fontSize(15).text("Hello, world!", 50, 50);
+    doc.text("lalalala", { width: 410, align: "left" });
+
+    var opt = {width: 669, height: 104};
+    SVGtoPDF(doc, svgString, 50, 200, opt);
+    doc.end();
+    
 
 });
-
-
-
-
 
 /*
 1. Learn about Linkedin profile API
 2. Upload png as profile background image using profile API
 */
-
-	

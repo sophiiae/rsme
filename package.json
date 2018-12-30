@@ -9,7 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "d3": "^5.7.0",
+    "pdfkit": "^0.8.3",
     "request": "^2.88.0",
+    "sharp": "^0.21.1",
+    "svg-to-pdfkit": "^0.1.7",
     "xmldom": "^0.1.27",
     "xpath": "0.0.27"
   }
