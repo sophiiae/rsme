@@ -8,14 +8,13 @@ Step:
 */
 
 const request = require("request");
-
 const domParser = require("xmldom").DOMParser;
 const xpath = require("xpath");
 const dom = new domParser();
-const fs = require("fs");
 const pdfkit = require("pdfkit");
 const SVGtoPDF = require('svg-to-pdfkit');
 const ftp = require("basic-ftp");
+const streamBuffers = require("stream-buffers");
 
 request("https://github.com/users/sophiiae/contributions", function(error,response, body) {
     if (error) throw error;
@@ -32,17 +31,11 @@ request("https://github.com/users/sophiiae/contributions", function(error,respon
 
     var doc = new pdfkit();
 
-    var wStream = fs.createWriteStream("./output.pdf");
-    doc.pipe(wStream);
-    doc.fontSize(15).text("Hello, world!", 50, 50);
-    doc.text("lalalala", { width: 410, align: "left" });
-
-    var opt = {width: 669, height: 104};
-    SVGtoPDF(doc, svgString, 50, 200, opt);
-    doc.end();
-    
+    var wStream = new streamBuffers.WritableStreamBuffer();
     wStream.on('finish', () => {
-        const rStream = fs.createReadStream('./output.pdf');
+        const rStream = new streamBuffers.ReadableStreamBuffer();
+        rStream.put(wStream.getContents());
+        rStream.stop();
 
         const client = new ftp.Client();
         client.ftp.verbose = true;
@@ -53,17 +46,24 @@ request("https://github.com/users/sophiiae/contributions", function(error,respon
             secure: false
         }).then(() => {
             client
-                .upload(rStream, 'stream.pdf')
+                .upload(rStream, 'latest.pdf')
                 .then(()=> {
                     client.close();
-                    rStream.close();        
                 });
         }).catch((err) => {
             console.log(err)
             client.close();
-            rStream.close();    
         });    
     });
+
+    doc.pipe(wStream);
+    doc.fontSize(15).text("Hello, world!", 50, 50);
+    doc.text("lalalala", { width: 410, align: "left" });
+
+    var opt = {width: 669, height: 104};
+    SVGtoPDF(doc, svgString, 50, 200, opt);
+    doc.end();
+    
 });
 
 /*
