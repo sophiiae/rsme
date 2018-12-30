@@ -12,31 +12,28 @@ const request = require("request");
 const domParser = require("xmldom").DOMParser;
 const xpath = require("xpath");
 const dom = new domParser();
-const d3 = require("d3");
-const sharp = require("sharp");
 const fs = require("fs");
-// const https = require('https');
 const pdfkit = require("pdfkit");
 const SVGtoPDF = require('svg-to-pdfkit');
+const ftp = require("basic-ftp");
 
-request("https://github.com/users/sophiiae/contributions", function(
-    error,
-    response,
-    body
-    ) {
+request("https://github.com/users/sophiiae/contributions", function(error,response, body) {
+    if (error) throw error;
+
+    if (response.statusCode !== 200) throw ("Request failed. Status code: " + response.statusCode);
+
     var doc = dom.parseFromString(body);
     var svgNode = xpath.select("(//svg[@class='js-calendar-graph-svg'])[1]",doc)[0];
+
+    if (!svgNode) throw 'SVG element not found.';
+
     var svgString = svgNode.toString();
     // console.log(svgString);
 
-    sharp(Buffer.from(svgString))
-        .resize(1280, null, { fit: "inside" })
-        .flatten({ background: "#ffffff" })
-        .toFile("output.png");
-
     var doc = new pdfkit();
 
-    doc.pipe(fs.createWriteStream("output.pdf"));
+    var wStream = fs.createWriteStream("./output.pdf");
+    doc.pipe(wStream);
     doc.fontSize(15).text("Hello, world!", 50, 50);
     doc.text("lalalala", { width: 410, align: "left" });
 
@@ -44,7 +41,29 @@ request("https://github.com/users/sophiiae/contributions", function(
     SVGtoPDF(doc, svgString, 50, 200, opt);
     doc.end();
     
+    wStream.on('finish', () => {
+        const rStream = fs.createReadStream('./output.pdf');
 
+        const client = new ftp.Client();
+        client.ftp.verbose = true;
+        client.access({
+            host: "zhengstud.io",
+            user: "resume@zhengstud.io",
+            password: "uiop2019",
+            secure: false
+        }).then(() => {
+            client
+                .upload(rStream, 'stream.pdf')
+                .then(()=> {
+                    client.close();
+                    rStream.close();        
+                });
+        }).catch((err) => {
+            console.log(err)
+            client.close();
+            rStream.close();    
+        });    
+    });
 });
 
 /*
