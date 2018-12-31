@@ -2,7 +2,7 @@
 .DS_Store
 output.pdf
 output.png
-
+source/
 .index.js.swp
 # Logs
 logs
