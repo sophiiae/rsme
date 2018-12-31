@@ -2,8 +2,8 @@
 .DS_Store
 output.pdf
 output.png
-
 .index.js.swp
+.env
 # Logs
 logs
 *.log

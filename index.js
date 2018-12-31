@@ -3,68 +3,74 @@ Step:
 0. Find library that can make HTTP request
 1. Given url, save as string in memory
 1.1 Find a library that can parse HTML into DOM(domain object model)
-2. From the DOM, extract svg 
+2. From the DOM, extract svg
 3. Convert svg into png file
 */
 
-const request = require("request");
-const domParser = require("xmldom").DOMParser;
-const xpath = require("xpath");
-const dom = new domParser();
-const pdfkit = require("pdfkit");
-const SVGtoPDF = require('svg-to-pdfkit');
-const ftp = require("basic-ftp");
-const streamBuffers = require("stream-buffers");
+const request = require('request')
+const DomParser = require('xmldom').DOMParser
+const xpath = require('xpath')
+const dom = new DomParser()
+const Pdfkit = require('pdfkit')
+const SVGtoPDF = require('svg-to-pdfkit')
+const ftp = require('basic-ftp')
+const streamBuffers = require('stream-buffers')
+const conf = require('./conf/conf')
+const dotenv = require('dotenv')
 
-request("https://github.com/users/sophiiae/contributions", function(error,response, body) {
-    if (error) throw error;
+dotenv.config()
 
-    if (response.statusCode !== 200) throw ("Request failed. Status code: " + response.statusCode);
+request(conf.data.github_chart_url, function (error, response, body) {
+    if (error) throw error
 
-    var doc = dom.parseFromString(body);
-    var svgNode = xpath.select("(//svg[@class='js-calendar-graph-svg'])[1]",doc)[0];
+    if (response.statusCode !== 200) throw ('Request failed. Status code: ' + response.statusCode)
 
-    if (!svgNode) throw 'SVG element not found.';
+    // extract svg content from web source
+    var doc = dom.parseFromString(body)
+    var svgNode = xpath.select("(//svg[@class='js-calendar-graph-svg'])[1]", doc)[0]
 
-    var svgString = svgNode.toString();
+    if (!svgNode) throw 'SVG element not found.'
+
+    var svgString = svgNode.toString()
     // console.log(svgString);
 
-    var doc = new pdfkit();
+    var doc = new Pdfkit()
 
-    var wStream = new streamBuffers.WritableStreamBuffer();
+    //use stream buffer and upload stream as pdf file
+    var wStream = new streamBuffers.WritableStreamBuffer()
     wStream.on('finish', () => {
-        const rStream = new streamBuffers.ReadableStreamBuffer();
-        rStream.put(wStream.getContents());
-        rStream.stop();
+        const rStream = new streamBuffers.ReadableStreamBuffer()
+        rStream.put(wStream.getContents())
+        rStream.stop()
 
-        const client = new ftp.Client();
-        client.ftp.verbose = true;
+        const client = new ftp.Client()
+        client.ftp.verbose = true
         client.access({
-            host: "zhengstud.io",
-            user: "resume@zhengstud.io",
-            password: "uiop2019",
+            //FTP server login info
+            host: conf.login.host,
+            user: conf.login.user,
+            password: conf.login.password,
             secure: false
         }).then(() => {
             client
-                .upload(rStream, 'latest.pdf')
-                .then(()=> {
-                    client.close();
-                });
+                .upload(rStream, conf.data.resume_name)
+                .then(() => {
+                    client.close()
+                })
         }).catch((err) => {
             console.log(err)
-            client.close();
-        });    
-    });
+            client.close()
+        })
+    })
 
     doc.pipe(wStream);
-    doc.fontSize(15).text("Hello, world!", 50, 50);
-    doc.text("lalalala", { width: 410, align: "left" });
+    doc.fontSize(15).text('Hello, world!', 50, 50)
+    doc.text('lalalala', { width: 410, align: 'left' })
 
-    var opt = {width: 669, height: 104};
-    SVGtoPDF(doc, svgString, 50, 200, opt);
-    doc.end();
-    
-});
+    var opt = {width: 669, height: 104}
+    SVGtoPDF(doc, svgString, 50, 250, opt)
+    doc.end() 
+})
 
 /*
 1. Learn about Linkedin profile API
