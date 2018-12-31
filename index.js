@@ -15,9 +15,12 @@ const Pdfkit = require('pdfkit')
 const SVGtoPDF = require('svg-to-pdfkit')
 const ftp = require('basic-ftp')
 const streamBuffers = require('stream-buffers')
-const info = require('./source/info')
+const conf = require('./conf/conf')
+const dotenv = require('dotenv')
 
-request('https://github.com/users/sophiiae/contributions', function (error, response, body) {
+dotenv.config()
+
+request(conf.data.github_chart_url, function (error, response, body) {
     if (error) throw error
 
     if (response.statusCode !== 200) throw ('Request failed. Status code: ' + response.statusCode)
@@ -44,13 +47,13 @@ request('https://github.com/users/sophiiae/contributions', function (error, resp
         client.ftp.verbose = true
         client.access({
             //FTP server login info
-            host: info.login.host,
-            user: info.login.user,
-            password: info.login.password,
+            host: conf.login.host,
+            user: conf.login.user,
+            password: conf.login.password,
             secure: false
         }).then(() => {
             client
-                .upload(rStream, 'latest.pdf')
+                .upload(rStream, conf.data.resume_name)
                 .then(() => {
                     client.close()
                 })
