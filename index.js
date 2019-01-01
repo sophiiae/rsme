@@ -16,15 +16,15 @@ dotenv.config()
 request(conf.info.github_chart_url, function (error, response, body) {
     if (error) throw error
 
-    if (response.statusCode !== 200) throw ('Request failed. Status code: ' + response.statusCode)
+    if (response.statusCode !== 200) throw new Error('Request failed. Status code: ' + response.statusCode)
 
-    //-->> extract svg content from web source ----------------
-    var doc_svg = dom.parseFromString(body)
-    var svgString = xpath.select("(//svg[@class='js-calendar-graph-svg'])[1]", doc_svg)[0].toString()
+    // -->> extract svg content from web source ----------------
+    var docSVG = dom.parseFromString(body)
+    var svgString = xpath.select("(//svg[@class='js-calendar-graph-svg'])[1]", docSVG)[0].toString()
 
-    if (!svgString) throw 'SVG element not found.'
+    if (!svgString) throw new Error('SVG element not found.')
 
-    //-->> use stream buffer and upload stream as pdf file ------------
+    // -->> use stream buffer and upload stream as pdf file ------------
     var doc = new Pdfkit()
     var wStream = new streamBuffers.WritableStreamBuffer()
 
@@ -36,7 +36,7 @@ request(conf.info.github_chart_url, function (error, response, body) {
         const client = new ftp.Client()
         client.ftp.verbose = true
         client.access({
-            //FTP server login info
+            // FTP server login info
             host: conf.login.host,
             user: conf.login.user,
             password: conf.login.password,
@@ -53,13 +53,13 @@ request(conf.info.github_chart_url, function (error, response, body) {
         })
     })
 
-    //-->> PDF content -----------------------------------------
-    doc.pipe(wStream);
+    // -->> PDF content -----------------------------------------
+    doc.pipe(wStream)
 
     // ** Profile Name
     doc.font(style.person.font)
         .fontSize(style.person.fontsize)
-        .text(linkedin.person.firstname + ' ' + linkedin.person.lastname, style.person.x, style.person.y,style.person.option)
+        .text(linkedin.person.firstname + ' ' + linkedin.person.lastname, style.person.x, style.person.y, style.person.option)
 
     // ** linkedin url link
     doc.font(style.links_url.font)
@@ -80,12 +80,12 @@ request(conf.info.github_chart_url, function (error, response, body) {
         .fontSize(style.program.fontsize)
         .fillColor('black')
         .text(linkedin.person.program + ' —— ' + linkedin.person.headline, style.program.x, style.program.y, style.program.option)
-    
+
     // ** person summary
     doc.font(style.intro.font)
         .fontSize(style.intro.fontsize)
         .text(linkedin.person.intro, style.intro.x, style.intro.y, style.intro.option)
-    
+
     // ** job
     doc.font(style.experience.font)
         .fontSize(style.experience.fontsize)
@@ -93,30 +93,30 @@ request(conf.info.github_chart_url, function (error, response, body) {
         .text('CURRENT JOB', style.experience.x, style.experience.y)
 
     // ** job title and employer
-    doc.font(style.job_title.font)
-        .fontSize(style.job_title.fontsize)
+    doc.font(style.jobTitle.font)
+        .fontSize(style.jobTitle.fontsize)
         .fillColor('black')
-        .text(linkedin.job.title + '  |  ' + linkedin.job.employer, style.job_title.x, style.job_title.y)
+        .text(linkedin.job.title + '  |  ' + linkedin.job.employer, style.jobTitle.x, style.jobTitle.y)
 
-    // ** job time 
-    doc.font(style.job_time.font)
-        .fontSize(style.job_time.fontsize)
-        .text(linkedin.job.month + ' ' + linkedin.job.year + ' to Present ', style.job_time.x, style.job_time.y)
+    // ** job time
+    doc.font(style.jobTime.font)
+        .fontSize(style.jobTime.fontsize)
+        .text(linkedin.job.month + ' ' + linkedin.job.year + ' to Present ', style.jobTime.x, style.jobTime.y)
 
-    // ** job summary 
+    // ** job summary
     // doc.text(linkedin.job.summary)
-    doc.font(style.job_summary.font)
-        .fontSize(style.job_summary.fontsize)
-        .text(linkedin.job.summary, style.job_summary.x, style.job_summary.y, style.job_summary.option)
+    doc.font(style.jobSummary.font)
+        .fontSize(style.jobSummary.fontsize)
+        .text(linkedin.job.summary, style.jobSummary.x, style.jobSummary.y, style.jobSummary.option)
 
     // ** Github chart title
-    var github_name = 'GitHub'
-    doc.font(style.github_title.font)
-        .fontSize(style.github_title.fontsize)
-        .text(github_name, style.github_title.x, style.github_title.y, style.github_title.option)
+    var githubName = 'GitHub'
+    doc.font(style.githubTitle.font)
+        .fontSize(style.githubTitle.fontsize)
+        .text(githubName, style.githubTitle.x, style.githubTitle.y, style.githubTitle.option)
 
     // **  Github contribution chart
     SVGtoPDF(doc, svgString, style.github.x, style.github.y)
 
-    doc.end() 
+    doc.end()
 })

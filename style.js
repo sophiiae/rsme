@@ -7,32 +7,32 @@ const fonts = {
     light: opensans + 'OpenSans-Light.ttf',
     black: lato + 'Lato-Black.ttf'
 }
-const margin_left = 50
-const margin_top = 50
+const marginLeft = 50
+const marginTop = 50
 
 var person = {
     font: fonts.bold,
     fontsize: 30,
-    x: margin_left, 
-    y: margin_top, 
+    x: marginLeft,
+    y: marginTop,
     option: {
-        stroke: true, 
+        stroke: true,
         fill: true
     }
 }
 
 var links = {
     font: fonts.regular,
-    fontsize: 10, 
-    x: 50, 
+    fontsize: 10,
+    x: 50,
     y: person.y + 40,
     option: {
-        align: 'left',
+        align: 'left'
     }
 }
 
 module.exports.line = {
-    startx: margin_left, 
+    startx: marginLeft,
     starty: links.y + 18,
     endx: 540,
     endy: links.y + 18
@@ -41,21 +41,21 @@ module.exports.line = {
 var program = {
     font: fonts.bold_italic,
     fontsize: 14,
-    x: margin_left,
+    x: marginLeft,
     y: links.y + 24,
     option: {
-        stroke: true, 
-        fill: true,
+        stroke: true,
+        fill: true
     }
 }
 
 var summary = {
     font: fonts.regular,
-    fontsize: 12, 
-    x: margin_left,
+    fontsize: 12,
+    x: marginLeft,
     y: program.y + 24,
     option: {
-        width: 500, 
+        width: 500,
         align: 'left'
     }
 }
@@ -63,40 +63,40 @@ var summary = {
 var experience = {
     font: fonts.bold,
     fontsize: 14,
-    x: margin_left, 
-    y: summary.y + 50,
+    x: marginLeft,
+    y: summary.y + 50
 }
 
-var job_title = {
+var jobTitle = {
     font: fonts.bold,
     fontsize: 12,
-    x: margin_left,
-    y: experience.y + 18, 
+    x: marginLeft,
+    y: experience.y + 18
 }
 
-var job_time = {
+var jobTime = {
     font: fonts.light,
     fontsize: 10,
-    x: margin_left,
-    y: job_title.y + 16, 
+    x: marginLeft,
+    y: jobTitle.y + 16
 }
 
-var job_summary = {
+var jobSummary = {
     font: fonts.regular,
     fontsize: 12,
-    x: margin_left,
-    y: job_time.y + 16, 
+    x: marginLeft,
+    y: jobTime.y + 16,
     option: {
         width: 500,
         align: 'left'
     }
 }
 
-var github_title = {
-    font: fonts.black, 
+var githubTitle = {
+    font: fonts.black,
     fontsize: 13,
-    x: margin_left, 
-    y: job_summary.y + 100,
+    x: marginLeft,
+    y: jobSummary.y + 100,
     option: {
         width: 500,
         align: 'center',
@@ -104,10 +104,10 @@ var github_title = {
     }
 }
 var github = {
-    x: margin_left, 
-    y: github_title.y + 24,
+    x: marginLeft,
+    y: githubTitle.y + 24,
     option: {
-        width: 669, 
+        width: 669,
         height: 110,
         align: 'center'
     }
@@ -118,8 +118,8 @@ module.exports.links_url = links
 module.exports.program = program
 module.exports.intro = summary
 module.exports.experience = experience
-module.exports.job_title = job_title
-module.exports.job_time = job_time
-module.exports.job_summary = job_summary
+module.exports.jobTitle = jobTitle
+module.exports.jobTime = jobTime
+module.exports.jobSummary = jobSummary
 module.exports.github = github
-module.exports.github_title = github_title
+module.exports.githubTitle = githubTitle
