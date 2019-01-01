@@ -3,7 +3,9 @@ const opensans = 'fonts/Open_Sans/'
 const fonts = {
     bold: lato + 'Lato-Bold.ttf',
     bold_italic: lato + 'Lato-BoldItalic.ttf',
-    regular: opensans + 'OpenSans-Regular.ttf'
+    regular: opensans + 'OpenSans-Regular.ttf',
+    light: opensans + 'OpenSans-Light.ttf',
+    black: lato + 'Lato-Black.ttf'
 }
 const margin_left = 50
 const margin_top = 50
@@ -26,7 +28,6 @@ var links = {
     y: person.y + 40,
     option: {
         align: 'left',
-        color: 'blue'
     }
 }
 
@@ -70,15 +71,48 @@ var job_title = {
     font: fonts.bold,
     fontsize: 12,
     x: margin_left,
-    y: experience.y + 22, 
+    y: experience.y + 18, 
 }
 
 var job_time = {
+    font: fonts.light,
+    fontsize: 10,
+    x: margin_left,
+    y: job_title.y + 16, 
+}
+
+var job_summary = {
     font: fonts.regular,
     fontsize: 12,
     x: margin_left,
-    y: job_title.y + 20, 
+    y: job_time.y + 16, 
+    option: {
+        width: 500,
+        align: 'left'
+    }
 }
+
+var github_title = {
+    font: fonts.black, 
+    fontsize: 13,
+    x: margin_left, 
+    y: job_summary.y + 100,
+    option: {
+        width: 500,
+        align: 'center',
+        underline: true
+    }
+}
+var github = {
+    x: margin_left, 
+    y: github_title.y + 24,
+    option: {
+        width: 669, 
+        height: 110,
+        align: 'center'
+    }
+}
+
 module.exports.person = person
 module.exports.links_url = links
 module.exports.program = program
@@ -86,3 +120,6 @@ module.exports.intro = summary
 module.exports.experience = experience
 module.exports.job_title = job_title
 module.exports.job_time = job_time
+module.exports.job_summary = job_summary
+module.exports.github = github
+module.exports.github_title = github_title

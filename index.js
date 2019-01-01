@@ -8,8 +8,8 @@ const ftp = require('basic-ftp')
 const streamBuffers = require('stream-buffers')
 const dotenv = require('dotenv')
 const conf = require('./conf/conf')
-const style = require('./style')
 const linkedin = require('./conf/linkedin')
+const style = require('./style')
 
 dotenv.config()
 
@@ -89,11 +89,13 @@ request(conf.info.github_chart_url, function (error, response, body) {
     // ** job
     doc.font(style.experience.font)
         .fontSize(style.experience.fontsize)
-        .text('CURRENT WORK', style.experience.x, style.experience.y)
+        .fillColor('gray')
+        .text('CURRENT JOB', style.experience.x, style.experience.y)
 
     // ** job title and employer
     doc.font(style.job_title.font)
         .fontSize(style.job_title.fontsize)
+        .fillColor('black')
         .text(linkedin.job.title + '  |  ' + linkedin.job.employer, style.job_title.x, style.job_title.y)
 
     // ** job time 
@@ -103,12 +105,18 @@ request(conf.info.github_chart_url, function (error, response, body) {
 
     // ** job summary 
     // doc.text(linkedin.job.summary)
+    doc.font(style.job_summary.font)
+        .fontSize(style.job_summary.fontsize)
+        .text(linkedin.job.summary, style.job_summary.x, style.job_summary.y, style.job_summary.option)
+
+    // ** Github chart title
+    var github_name = 'GitHub'
+    doc.font(style.github_title.font)
+        .fontSize(style.github_title.fontsize)
+        .text(github_name, style.github_title.x, style.github_title.y, style.github_title.option)
 
     // **  Github contribution chart
-    SVGtoPDF(doc, svgString, 50, 300, {
-        width: 669, 
-        height: 110
-    })
+    SVGtoPDF(doc, svgString, style.github.x, style.github.y)
 
     doc.end() 
 })
