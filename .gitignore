@@ -4,6 +4,8 @@ output.pdf
 output.png
 .index.js.swp
 .env
+.eslintrc.js
+
 # Logs
 logs
 *.log
