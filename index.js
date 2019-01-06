@@ -68,7 +68,7 @@ setInterval(function () {
             .fillColor('blue')
             .text('LinkedIn', style.links_url.x, style.links_url.y, {
                 align: 'left',
-                link: 'http://www.linkedin.com/in/feifeizheng'
+                link: conf.info.linkedin
             })
 
         // ** line

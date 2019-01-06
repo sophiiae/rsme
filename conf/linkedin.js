@@ -15,7 +15,7 @@ request(conf.info.linkedin_profile, function (error, response, body) {
     if (response.statusCode !== 200) throw new Error('Request failed. Status code: ' + response.statusCode)
 
     var linkedin = body
-    // console.log(body);
+    console.log(body)
 
     // -->> extract linkedin profile information ----------------
     var docLinkedin = dom.parseFromString(linkedin)

@@ -12,7 +12,8 @@ const login = {
 const info = {
     github_chart_url: process.env.GITHUB_CHART_URL,
     resume_name: process.env.RESUME_NAME,
-    linkedin_profile: process.env.LINKEDIN_PROFILE
+    linkedin_profile: process.env.LINKEDIN_PROFILE,
+    linkedin: process.env.LINKEDIN
 }
 
 module.exports.login = login
