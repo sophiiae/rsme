@@ -1,31 +1,23 @@
 {
-  "name": "n",
+  "name": "linkedintoken",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "basic-ftp": "^3.0.0",
     "dotenv": "^6.2.0",
-    "innertext": "^1.0.3",
-    "pdfkit": "^0.8.3",
-    "request": "^2.88.0",
-    "stream-buffers": "^3.0.2",
-    "svg-to-pdfkit": "^0.1.7",
-    "xmldom": "^0.1.27",
-    "xpath": "0.0.27"
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "mustache-express": "^1.2.8",
+    "request": "^2.88.0"
   },
   "devDependencies": {
-    "eslint": "^5.11.1",
-    "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-node": "^8.0.0",
-    "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0"
+    "eslint": "^5.12.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.15.0"
   }
 }
