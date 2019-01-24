@@ -25,7 +25,7 @@ const getPerson = (token, next) => {
 const renderPDF = res => (err, r, body) => {
   if (err) res.status(500).send(err);
   const person = JSON.parse(body);
-  res.status(200).render('token', {
+  res.status(200).render('tokenSuccess', {
     website: 'LinkedIn',
     user: person.firstName,
   });

@@ -1,5 +1,6 @@
 .vscode/
 .eslintrc.js
+.DS_Store
 # vim
 *.swp
 
