@@ -25,10 +25,12 @@ var headline = {
 }
 
 var githubTitle = {
-  fontsize: 13,
+  fontsize: 14,
   x: marginLeft,
   y: headline.y + 30,
   option: {
+      stroke: true,
+      fill: true,
       width: 500,
       align: 'center'
   }
