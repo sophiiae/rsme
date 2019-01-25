@@ -2,8 +2,13 @@ const express = require('express');
 const request = require('request');
 const mustacheExpress = require('mustache-express');
 const Pdfkit = require('pdfkit');
+const xpath = require('xpath');
+const SVGtoPDF = require('svg-to-pdfkit');
 const LocalStorage = require('node-localstorage').LocalStorage;
 localStorage = new LocalStorage('./scratch');
+const DomParser = require('xmldom').DOMParser;
+const dom = new DomParser();
+
 const conf = require('./routes/conf');
 const index = require('./routes/index');
 const style = require('./routes/style');
@@ -67,29 +72,61 @@ app.get('/auth', (req, res) => {
   accessToken(accesscode, res);
 });
 
+// get GitHub username
+app.get('/form', (req, res) => {
+  let username = req.query.github;
+  let chart = conf.github.pre + username + conf.github.suf;
+  localStorage.setItem('github', chart);
+})
+
 // render PDF
-app.get('/pdf', (req, res) => {
-  let doc = new Pdfkit();
-  let pplString = localStorage.getItem('person');
-  let person = JSON.parse(pplString);
+app.get('/pdf', (req, res) => {  
+  let github = localStorage.getItem('github');
+  request(github, (err, r, body) => {
+    if (err) throw err
+    if (res.statusCode !== 200) throw new Error('Request failed. Status code: ' + res.statusCode)
 
-  doc.pipe(res);
+    // -->> extract svg content from web source ----------------
+    var docSVG = dom.parseFromString(body)
+    var svgString = xpath.select("(//svg[@class='js-calendar-graph-svg'])[1]", docSVG)[0].toString()
 
-  // ** Profile Name
-  doc.fontSize(style.person.fontsize)
-    .text(person.firstName + ' ' + person.lastName, style.person.x, style.person.y, style.person.option);
+    if (!svgString) throw new Error('SVG element not found.')
 
-  // ** line
-  doc.moveTo(style.line.startx, style.line.starty)
-  .lineTo(style.line.endx, style.line.endy)
-  .stroke()
+    // -->> upload stream as pdf file ------------
+    let doc = new Pdfkit();
+    let pplString = localStorage.getItem('person');
+    let person = JSON.parse(pplString);
 
-  // ** person headline
-  doc.fontSize(style.headline.fontsize)
-  .fillColor('black')
-  .text(person.headline, style.headline.x, style.headline.y)
+    doc.pipe(res);
 
-  doc.end();
+    // ** Profile Name
+    doc.fontSize(style.person.fontsize)
+      .text(person.firstName + ' ' + person.lastName, style.person.x, style.person.y, style.person.option);
+
+    // ** line
+    doc.moveTo(style.line.startx, style.line.starty)
+    .lineTo(style.line.endx, style.line.endy)
+    .stroke()
+
+    // ** person headline
+    doc.fontSize(style.headline.fontsize)
+    .fillColor('black')
+    .text(person.headline, style.headline.x, style.headline.y)
+
+    // ** Github chart title
+    var githubName = 'GitHub'
+    doc.fontSize(style.githubTitle.fontsize)
+        .text(githubName, style.githubTitle.x, style.githubTitle.y, style.githubTitle.option)
+
+    var githubURL = localStorage.getItem('github');
+    doc.fontSize(style.githubURL.fontsize)
+        .text(githubURL, style.githubURL.x, style.githubURL.y, style.githubURL.option)
+
+    // **  Github contribution chart
+    SVGtoPDF(doc, svgString, style.github.x, style.github.y)
+
+    doc.end();
+  })
 })
 
 app.use((req, res, next) => {

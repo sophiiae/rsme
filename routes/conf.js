@@ -11,3 +11,8 @@ module.exports.linkedin = {
   id: process.env.LINKEDIN_ID,
   secret: process.env.LINKEDIN_SECRET,
 };
+
+module.exports.github = {
+  pre: process.env.GITHUB_PRE,
+  suf: process.env.GITHUB_SUF,
+}

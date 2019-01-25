@@ -27,16 +27,27 @@ var headline = {
 var githubTitle = {
   fontsize: 13,
   x: marginLeft,
-  y: headline.y + 100,
+  y: headline.y + 30,
+  option: {
+      width: 500,
+      align: 'center'
+  }
+}
+
+var githubURL = {
+  fontsize: 10,
+  x: marginLeft,
+  y: githubTitle.y + 20,
   option: {
       width: 500,
       align: 'center',
       underline: true
   }
 }
+
 var github = {
   x: marginLeft,
-  y: headline.y + 24,
+  y: githubURL.y + 24,
   option: {
       width: 669,
       height: 110,
@@ -49,4 +60,5 @@ module.exports.line = line
 module.exports.headline = headline
 
 module.exports.github = github
+module.exports.githubURL = githubURL
 module.exports.githubTitle = githubTitle

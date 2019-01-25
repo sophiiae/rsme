@@ -2,6 +2,11 @@
 <html>
     <head>
         <title>Success</title>
+        <script>
+            const showPDF = ()=> {
+                document.getElementById("pdf").style.display = "";
+            }
+        </script>
     </head>
     <body>
         <h1>Success!</h1>
@@ -10,6 +15,19 @@
             Successfully binding <b>{{website}}</b> to your account. <br>
             Click the button below to return to main page. <br>
         </p>
-        <button><a href="/pdf" target="_blank"> PDF </a></button>
+        <form action="/form" method="get">
+          <div>
+            User Name: <br>
+            <input type="text" name="github"/>
+          </div>
+          <div>
+            <button type="submit" onclick="showPDF()">submit</button>
+          </div>
+          <div id="pdf" style="display:none;"> 
+          <br>
+          <button><a href="/pdf" target="_blank"> PDF </a></button>
+          <button><a href="/" target="_blank"> Return </a></button>
+          </div>
+        </form>
     </body>
 </html>
