@@ -6,6 +6,7 @@ const LocalStorage = require('node-localstorage').LocalStorage;
 localStorage = new LocalStorage('./scratch');
 const conf = require('./routes/conf');
 const index = require('./routes/index');
+const style = require('./routes/style');
 
 const app = express();
 const port = 4000;
@@ -14,7 +15,8 @@ app.engine('mustache', mustacheExpress());
 app.set('view engine', 'mustache');
 app.set('views', `${__dirname}/views`);
 
-const renderPDF = res => (err, r, body) => {
+// extract LinkedIn public information
+const getInfo = res => (err, r, body) => {
   if (err) res.status(500).send(err);
   const person = JSON.parse(body);
   localStorage.setItem('person', body);
@@ -24,6 +26,7 @@ const renderPDF = res => (err, r, body) => {
   });
 };
 
+// get user with granted token
 const getPerson = (token, next) => {
   request.get(
     conf.linkedin.peopleURL,
@@ -36,6 +39,7 @@ const getPerson = (token, next) => {
   );
 };
 
+// generate OAuth token
 const accessToken = (accesscode, res) => {
   request.post(conf.linkedin.tokenURL, {
     form: {
@@ -52,7 +56,7 @@ const accessToken = (accesscode, res) => {
     }
 
     const token = JSON.parse(body).access_token;
-    getPerson(token, renderPDF(res));
+    getPerson(token, getInfo(res));
   });
 };
 
@@ -63,14 +67,28 @@ app.get('/auth', (req, res) => {
   accessToken(accesscode, res);
 });
 
+// render PDF
 app.get('/pdf', (req, res) => {
   let doc = new Pdfkit();
   let pplString = localStorage.getItem('person');
   let person = JSON.parse(pplString);
 
   doc.pipe(res);
-  doc.fontSize(25)
-    .text(person.firstName + person.lastName, 100, 100);
+
+  // ** Profile Name
+  doc.fontSize(style.person.fontsize)
+    .text(person.firstName + ' ' + person.lastName, style.person.x, style.person.y, style.person.option);
+
+  // ** line
+  doc.moveTo(style.line.startx, style.line.starty)
+  .lineTo(style.line.endx, style.line.endy)
+  .stroke()
+
+  // ** person headline
+  doc.fontSize(style.headline.fontsize)
+  .fillColor('black')
+  .text(person.headline, style.headline.x, style.headline.y)
+
   doc.end();
 })
 
