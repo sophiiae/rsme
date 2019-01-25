@@ -2,7 +2,8 @@ const express = require('express');
 const request = require('request');
 const mustacheExpress = require('mustache-express');
 const Pdfkit = require('pdfkit');
-
+const LocalStorage = require('node-localstorage').LocalStorage;
+localStorage = new LocalStorage('./scratch');
 const conf = require('./routes/conf');
 const index = require('./routes/index');
 
@@ -16,13 +17,11 @@ app.set('views', `${__dirname}/views`);
 const renderPDF = res => (err, r, body) => {
   if (err) res.status(500).send(err);
   const person = JSON.parse(body);
-  app.locals.ppl = person;
-  const doc = new Pdfkit();
-
-  doc.pipe(res);
-  doc.fontSize(25)
-    .text(person.firstName + person.lastName, 100, 100);
-  doc.end();
+  localStorage.setItem('person', body);
+  res.status(200).render('tokenSuccess', {
+    website: 'LinkedIn',
+    user: person.firstName,
+  });
 };
 
 const getPerson = (token, next) => {
@@ -64,6 +63,16 @@ app.get('/auth', (req, res) => {
   accessToken(accesscode, res);
 });
 
+app.get('/pdf', (req, res) => {
+  let doc = new Pdfkit();
+  let pplString = localStorage.getItem('person');
+  let person = JSON.parse(pplString);
+
+  doc.pipe(res);
+  doc.fontSize(25)
+    .text(person.firstName + person.lastName, 100, 100);
+  doc.end();
+})
 
 app.use((req, res, next) => {
   const err = new Error('Not Found!');
@@ -82,5 +91,5 @@ app.use((err, req, res) => {
 });
 
 app.listen(port, () => console.log(`App is served at http://localhost:${port}`));
-
+localStorage.clear();
 module.exports = app;
