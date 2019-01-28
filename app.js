@@ -17,6 +17,7 @@ const style = require('./routes/style');
 
 const app = express();
 const port = 4000;
+const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 app.engine('mustache', mustacheExpress());
 app.set('view engine', 'mustache');
@@ -129,7 +130,7 @@ app.get('/pdf', (req, res) => {
     if (position) {
       const company = position.company;
 
-      if (company.title && company.name) {
+      if (position.title && company.name) {
         // ** job
         doc.moveDown()
           .font('Helvetica')
@@ -138,23 +139,27 @@ app.get('/pdf', (req, res) => {
           .text('CURRENT JOB');
 
         // ** job title and employer
-        doc.fontSize(style.jobTitle.fontsize)
+        doc.moveDown(0.4)
+          .fontSize(style.jobTitle.fontsize)
           .fillColor('black')
-          .text(`${position.title}  |  ${company.name}`);
+          .text(`${position.title}  |  ${company.name}`, style.jobTitle.option);
       }
 
       const startDate = position.startDate;
 
       if (startDate) {
         // ** job time
-        doc.fontSize(style.jobTime.fontsize)
+        doc.moveDown(0.5)
+          .fontSize(style.jobTime.fontsize)
+          .font('Helvetica')
           .fillColor('gray')
-          .text(`${startDate.month} ${startDate.year} to Present `);
+          .text(`${monthNames[startDate.month - 1]} ${startDate.year} to Present `);
       }
 
       if (position.summary) {
         // ** job summary
-        doc.fontSize(style.jobSummary.fontsize)
+        doc.moveDown(0.5)
+          .fontSize(style.jobSummary.fontsize)
           .fillColor('black')
           .lineGap(4)
           .text(position.summary, style.jobSummary.option);
