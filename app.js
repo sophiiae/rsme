@@ -67,14 +67,16 @@ const accessToken = (accesscode, res) => {
   });
 };
 
+// main page
 app.use('/', index);
 
+// get authorized code
 app.get('/auth', (req, res) => {
   const accesscode = req.query.code;
   accessToken(accesscode, res);
 });
 
-// get GitHub username
+// get GitHub username from user input
 app.get('/form', (req, res) => {
   const username = req.query.github;
   const chart = conf.github.pre + username;
@@ -137,9 +139,9 @@ app.get('/pdf', (req, res) => {
 
     const position = person.positions.values[0];
 
+    // add content if position is found
     if (position) {
       const company = position.company;
-
       if (position.title && company.name) {
         // ** job
         doc.moveDown()
@@ -159,7 +161,6 @@ app.get('/pdf', (req, res) => {
       }
 
       const startDate = position.startDate;
-
       if (startDate) {
         // ** job time
         doc.moveDown(0.5)
@@ -202,12 +203,14 @@ app.get('/pdf', (req, res) => {
         underline: true,
       });
 
+    // convert GitHub contribution chart svg to pdf
     SVGtoPDF(doc, svgString, 50, doc.y + 10);
 
     doc.end();
   });
 });
 
+// show error page if not found
 app.use((req, res, next) => {
   const err = new Error('Not Found!');
   err.status = 404;
@@ -225,5 +228,8 @@ app.use((err, req, res) => {
 });
 
 app.listen(port, () => console.log(`App is served at http://localhost:${port}`));
+
+// clear local storage
 localStorage.clear();
+
 module.exports = app;

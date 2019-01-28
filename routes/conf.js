@@ -15,4 +15,3 @@ module.exports.linkedin = {
 module.exports.github = {
   pre: process.env.GITHUB_PRE,
 };
-
