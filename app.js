@@ -5,8 +5,10 @@ const Pdfkit = require('pdfkit');
 const xpath = require('xpath');
 const SVGtoPDF = require('svg-to-pdfkit');
 const LocalStorage = require('node-localstorage').LocalStorage;
-localStorage = new LocalStorage('./scratch');
+
+const localStorage = new LocalStorage('./scratch');
 const DomParser = require('xmldom').DOMParser;
+
 const dom = new DomParser();
 
 const conf = require('./routes/conf');
@@ -15,6 +17,7 @@ const style = require('./routes/style');
 
 const app = express();
 const port = 4000;
+const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 app.engine('mustache', mustacheExpress());
 app.set('view engine', 'mustache');
@@ -74,60 +77,111 @@ app.get('/auth', (req, res) => {
 
 // get GitHub username
 app.get('/form', (req, res) => {
-  let username = req.query.github;
-  let chart = conf.github.pre + username + conf.github.suf;
+  const username = req.query.github;
+  const chart = conf.github.pre + username;
   localStorage.setItem('github', chart);
-})
+});
 
 // render PDF
-app.get('/pdf', (req, res) => {  
-  let github = localStorage.getItem('github');
+app.get('/pdf', (req, res) => {
+  const github = localStorage.getItem('github');
   request(github, (err, r, body) => {
-    if (err) throw err
-    if (res.statusCode !== 200) throw new Error('Request failed. Status code: ' + res.statusCode)
+    if (err) throw err;
+    if (res.statusCode !== 200) throw new Error(`Request failed. Status code: ${res.statusCode}`);
 
     // -->> extract svg content from web source ----------------
-    var docSVG = dom.parseFromString(body)
-    var svgString = xpath.select("(//svg[@class='js-calendar-graph-svg'])[1]", docSVG)[0].toString()
+    const docSVG = dom.parseFromString(body);
+    const svgString = xpath.select("(//svg[@class='js-calendar-graph-svg'])[1]", docSVG)[0].toString();
 
-    if (!svgString) throw new Error('SVG element not found.')
+    if (!svgString) throw new Error('SVG element not found.');
 
     // -->> upload stream as pdf file ------------
-    let doc = new Pdfkit();
-    let pplString = localStorage.getItem('person');
-    let person = JSON.parse(pplString);
+    const doc = new Pdfkit();
+    const pplString = localStorage.getItem('person');
+    const person = JSON.parse(pplString);
 
     doc.pipe(res);
 
     // ** Profile Name
     doc.fontSize(style.person.fontsize)
-      .text(person.firstName + ' ' + person.lastName, style.person.x, style.person.y, style.person.option);
-
-    // ** line
-    doc.moveTo(style.line.startx, style.line.starty)
-    .lineTo(style.line.endx, style.line.endy)
-    .stroke()
+      .text(`${person.firstName} ${person.lastName}`, style.person.x, style.person.y, style.person.option);
 
     // ** person headline
-    doc.fontSize(style.headline.fontsize)
-    .fillColor('black')
-    .text(person.headline, style.headline.x, style.headline.y)
+    doc.font('Courier')
+      .fontSize(style.headline.fontsize)
+      .text(person.industry, style.headline.option);
+
+    doc.fontSize(12)
+      .text(person.headline);
+
+    // ** line
+    doc.moveTo(style.line.startx, doc.y + 6)
+      .fontSize(16)
+      .lineTo(style.line.endx, doc.y + 6)
+      .stroke();
+
+    // ** person intro
+    doc.moveDown()
+      .fontSize(12)
+      .text(person.summary, style.intro.option);
+
+    const position = person.positions.values[0];
+
+    if (position) {
+      const company = position.company;
+
+      if (position.title && company.name) {
+        // ** job
+        doc.moveDown()
+          .font('Helvetica')
+          .fontSize(style.experience.fontsize)
+          .fillColor('gray')
+          .text('CURRENT JOB');
+
+        // ** job title and employer
+        doc.moveDown(0.4)
+          .fontSize(style.jobTitle.fontsize)
+          .fillColor('black')
+          .text(`${position.title}  |  ${company.name}`, style.jobTitle.option);
+      }
+
+      const startDate = position.startDate;
+
+      if (startDate) {
+        // ** job time
+        doc.moveDown(0.5)
+          .fontSize(style.jobTime.fontsize)
+          .font('Helvetica')
+          .fillColor('gray')
+          .text(`${monthNames[startDate.month - 1]} ${startDate.year} to Present `);
+      }
+
+      if (position.summary) {
+        // ** job summary
+        doc.moveDown(0.5)
+          .fontSize(style.jobSummary.fontsize)
+          .fillColor('black')
+          .lineGap(4)
+          .text(position.summary, style.jobSummary.option);
+      }
+    }
 
     // ** Github chart title
-    var githubName = 'GitHub'
-    doc.fontSize(style.githubTitle.fontsize)
-        .text(githubName, style.githubTitle.x, style.githubTitle.y, style.githubTitle.option)
+    const githubName = 'GitHub';
+    doc.moveDown()
+      .font('Helvetica')
+      .fontSize(style.githubTitle.fontsize)
+      .text(githubName, style.githubTitle.option);
 
-    var githubURL = localStorage.getItem('github');
+    const githubURL = localStorage.getItem('github');
     doc.fontSize(style.githubURL.fontsize)
-        .text(githubURL, style.githubURL.x, style.githubURL.y, style.githubURL.option)
+      .text(githubURL, style.githubURL.option);
 
-    // **  Github contribution chart
-    SVGtoPDF(doc, svgString, style.github.x, style.github.y)
+    SVGtoPDF(doc, svgString, style.github.x, doc.y + 10);
 
     doc.end();
-  })
-})
+  });
+});
 
 app.use((req, res, next) => {
   const err = new Error('Not Found!');

@@ -14,5 +14,5 @@ module.exports.linkedin = {
 
 module.exports.github = {
   pre: process.env.GITHUB_PRE,
-  suf: process.env.GITHUB_SUF,
-}
+};
+
