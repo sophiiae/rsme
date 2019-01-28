@@ -13,7 +13,6 @@ const dom = new DomParser();
 
 const conf = require('./routes/conf');
 const index = require('./routes/index');
-const style = require('./routes/style');
 
 const app = express();
 const port = 4000;
@@ -103,27 +102,38 @@ app.get('/pdf', (req, res) => {
     doc.pipe(res);
 
     // ** Profile Name
-    doc.fontSize(style.person.fontsize)
-      .text(`${person.firstName} ${person.lastName}`, style.person.x, style.person.y, style.person.option);
+    doc.fontSize(30)
+      .text(`${person.firstName} ${person.lastName}`, 60, 50, {
+        stroke: true,
+        fill: true,
+      });
 
     // ** person headline
     doc.font('Courier')
-      .fontSize(style.headline.fontsize)
-      .text(person.industry, style.headline.option);
+      .fontSize(14)
+      .text(person.industry, {
+        stroke: true,
+        fill: true,
+      });
 
     doc.fontSize(12)
       .text(person.headline);
 
     // ** line
-    doc.moveTo(style.line.startx, doc.y + 6)
+    doc.moveTo(50, doc.y + 6)
       .fontSize(16)
-      .lineTo(style.line.endx, doc.y + 6)
+      .lineTo(540, doc.y + 6)
       .stroke();
 
     // ** person intro
     doc.moveDown()
       .fontSize(12)
-      .text(person.summary, style.intro.option);
+      .text(person.summary, {
+        width: 500,
+        align: 'left',
+        stroke: true,
+        fill: true,
+      });
 
     const position = person.positions.values[0];
 
@@ -134,15 +144,18 @@ app.get('/pdf', (req, res) => {
         // ** job
         doc.moveDown()
           .font('Helvetica')
-          .fontSize(style.experience.fontsize)
+          .fontSize(16)
           .fillColor('gray')
           .text('CURRENT JOB');
 
         // ** job title and employer
         doc.moveDown(0.4)
-          .fontSize(style.jobTitle.fontsize)
+          .fontSize(14)
           .fillColor('black')
-          .text(`${position.title}  |  ${company.name}`, style.jobTitle.option);
+          .text(`${position.title}  |  ${company.name}`, {
+            stroke: true,
+            fill: true,
+          });
       }
 
       const startDate = position.startDate;
@@ -150,7 +163,7 @@ app.get('/pdf', (req, res) => {
       if (startDate) {
         // ** job time
         doc.moveDown(0.5)
-          .fontSize(style.jobTime.fontsize)
+          .fontSize(12)
           .font('Helvetica')
           .fillColor('gray')
           .text(`${monthNames[startDate.month - 1]} ${startDate.year} to Present `);
@@ -159,10 +172,13 @@ app.get('/pdf', (req, res) => {
       if (position.summary) {
         // ** job summary
         doc.moveDown(0.5)
-          .fontSize(style.jobSummary.fontsize)
+          .fontSize(12)
           .fillColor('black')
           .lineGap(4)
-          .text(position.summary, style.jobSummary.option);
+          .text(position.summary, {
+            width: 500,
+            align: 'left',
+          });
       }
     }
 
@@ -170,14 +186,23 @@ app.get('/pdf', (req, res) => {
     const githubName = 'GitHub';
     doc.moveDown()
       .font('Helvetica')
-      .fontSize(style.githubTitle.fontsize)
-      .text(githubName, style.githubTitle.option);
+      .fontSize(14)
+      .text(githubName, {
+        stroke: true,
+        fill: true,
+        width: 500,
+        align: 'center',
+      });
 
     const githubURL = localStorage.getItem('github');
-    doc.fontSize(style.githubURL.fontsize)
-      .text(githubURL, style.githubURL.option);
+    doc.fontSize(10)
+      .text(githubURL, {
+        width: 500,
+        align: 'center',
+        underline: true,
+      });
 
-    SVGtoPDF(doc, svgString, style.github.x, doc.y + 10);
+    SVGtoPDF(doc, svgString, 50, doc.y + 10);
 
     doc.end();
   });
