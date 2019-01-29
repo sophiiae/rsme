@@ -227,6 +227,7 @@ app.use((err, req, res) => {
   });
 });
 
+// app.listen(port, () => console.log('App is served at http://99.79.3.225'));
 app.listen(port, () => console.log(`App is served at http://localhost:${port}`));
 
 // clear local storage

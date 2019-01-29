@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Success</title>
+        <title>RSME - Success</title>
         <script>
             const showPDF = ()=> {
                 document.getElementById("pdf").style.display = "";
@@ -15,10 +15,10 @@
             Successfully binding <b>{{website}}</b>. <br>
             Please fill the form below.  <br>
         </p>
-        <form action="/form" method="get">
+        <form name="form" action="/form" method="get" onsubmit="return test()">
           <div>
             <b>GitHub</b> User Name: <br>
-            <input type="text" name="github" required/>
+            <input type="text" name="github" id="github" required="required" />
           </div>
           <div>
             <button type="submit" onclick="showPDF()">submit</button>
@@ -29,5 +29,7 @@
           <button><a href="/"> Return </a></button>
           </div>
         </form>
+        <p><b>Warning: The GitHub username is required. <br>
+        please enter github username and re-submit before clicking PDF button. </b></p>
     </body>
 </html>

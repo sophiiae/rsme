@@ -5,7 +5,6 @@ const router = express.Router();
 
 router.get('/', (req, res, next) => {
   res.render('index', {
-    title: 'LinkedIn Binding',
     oauth: conf.linkedin.oauth,
   });
 });
