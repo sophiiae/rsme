@@ -1,6 +1,6 @@
 # rsme
 <img src="img/rsme-logo.jpg" alt="logo" width="100"/>
-Web application that generates resume in PDF from LinkedIn and GitHub via Express.js and LinkedIn RESTful API.
+Web application that auto generates resume in PDF.
 
 - Built a web application that auto generates resume in PDF.
 - It gets user profile information with given binding permission from LinkedIn via LinkedIn
