@@ -1,35 +1,54 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>RSME - Success</title>
-        <script>
-            const showPDF = ()=> {
-                document.getElementById("pdf").style.display = "";
-            }
-        </script>
-    </head>
-    <body>
-        <h1>Success!</h1>
-        <h2>User: {{user}}</h2>
-        <p>
-            Successfully binding <b>{{website}}</b>. <br>
-            Please fill the form below.  <br>
-        </p>
-        <form name="form" action="/form" method="get" onsubmit="return test()">
-          <div>
-            <b>GitHub</b> User Name: <br>
-            <input type="text" name="github" id="github" required="required" />
-          </div>
-          <div>
-            <button type="submit" onclick="showPDF()">submit</button>
-          </div>
-          <div id="pdf" style="display:none;"> 
-          <br>
-          <button><a href="/pdf" target="_blank"> PDF </a></button>
-          <button><a href="/"> Return </a></button>
-          </div>
-        </form>
-        <p><b>Warning: The GitHub username is required. <br>
-        please enter github username and re-submit before clicking PDF button. </b></p>
-    </body>
+  <head>
+      <title>RSME - Success</title>
+      <style>
+        html {
+        scroll-behavior: smooth;
+        }
+
+        /*---------- paddings ----------*/
+        .padding {
+          padding: 48px 96px 48px 96px;
+        }
+
+        .sidepadding {
+          padding: 0 96px 0 96px;
+        }
+      </style>
+
+      <script>
+        const showPDF = ()=> {
+          document.getElementById("pdf").style.display = "";
+        }
+      </script>
+  </head>
+  <body>
+    <div class="padding">
+      <h1>Success!</h1>
+      <h2>User: {{user}}</h2>
+      <p>
+          Successfully binding <b>{{website}}</b>. <br>
+          Please fill the form below.  <br>
+      </p>
+      <form name="form" action="/form" method="get" onsubmit="return test()">
+        <div>
+          <b>GitHub</b> User Name: <br>
+          <input type="text" name="github" id="github" required="required" />
+        </div>
+        <div>
+          <button type="submit" onclick="showPDF()">submit</button>
+        </div>
+        <div id="pdf" style="display:none;">
+        <br>
+        <button><a href="/pdf" target="_blank"> PDF </a></button>
+        <button><a href="/"> Return </a></button>
+        </div>
+      </form>
+      <p><b><u>Warning:</u> <br />
+      The GitHub username is required. <br>
+      If you get an error page, <br />
+      please enter github username and re-submit before clicking PDF button. </b></p>
+    </div>
+  </body>
 </html>
