@@ -12,7 +12,7 @@ mustache-express, etc.
 
 Try out here: [rsme](http://rsme.zhengstud.io)
 
-<img src="img/rsme.png" alt="qrcode" width="200"/>
+<img src="img/rsme-qr.png" alt="qrcode" width="200"/>
 
  
 ## Swim Lane Diagram
