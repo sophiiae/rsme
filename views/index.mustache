@@ -3,30 +3,40 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>RSME</title>
     <style>
-    html {
+      html {
         scroll-behavior: smooth;
       }
-
+      body {
+        font-family: 'Oxygen', sans-serif;
+      }
+      h1 {
+        font-weight: 600;
+        margin-top: 10px;
+      }
       /*---------- paddings ----------*/
       .padding {
-        padding: 20px 50px 20px 50px;
+        padding: 30px 50px 30px 50px;
       }
 
       .sidepadding {
         padding: 0 50px 0 50px;
       }
+
+      #linkedin-link {
+        margin-top: 30px;
+      }
     </style>
   </head>
   <body>
     <div class="padding">
-      <img src="https://i.ibb.co/wzN50R0/rsme-logo.jpg" alt="rsme-logo" border="0" width="80">
+      <img id="logo" src="https://i.ibb.co/wzN50R0/rsme-logo.jpg" alt="rsme-logo" border="0" width="80">
       <h1> Welcome to RSME. </h1>
-
-      <!-- ! <button ><a href={{oauth}}> LinkedIn </a></button> -->
       <div>
-        <a href={{oauth}}><img src="https://i.ibb.co/bBnsczc/linkedin.png" alt="linkedin" border="0" width="240" ></a>
+        <a id="linkedin-link" href={{oauth}}><img src="https://i.ibb.co/bBnsczc/linkedin.png" alt="linkedin" border="0" width="240" ></a>
       </div>
     </div>
   </body>

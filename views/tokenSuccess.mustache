@@ -1,31 +1,45 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
-      <title>RSME - Success</title>
-      <style>
-        html {
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>RSME - Success</title>
+    <style>
+      html {
         scroll-behavior: smooth;
-        }
+      }
 
-        /*---------- paddings ----------*/
-        .padding {
-          padding: 20px 50px 20px 50px;
-        }
+      body {
+        font-family: 'Oxygen', sans-serif;
+      }
 
-        .sidepadding {
-          padding: 0 50px 0 50px;
-        }
-      </style>
+      h1 {
+        font-weight: 600;
+        margin-top: 10px;
+      }
+      /*---------- paddings ----------*/
+      .padding {
+        padding: 30px 50px 30px 50px;
+      }
 
-      <script>
-        const showPDF = ()=> {
-          document.getElementById("pdf").style.display = "";
-        }
-      </script>
+      .sidepadding {
+        padding: 0 50px 0 50px;
+      }
+    </style>
+
+    <script>
+      const showPDF = () => {
+        document.getElementById("pdf").style.display = "";
+      }
+    </script>
+
   </head>
   <body>
     <div class="padding">
       <h1>Success!</h1>
+
       <h2>User: {{user}}</h2>
       <p>
           Successfully binding <b>{{website}}</b>. <br>
@@ -33,16 +47,17 @@
       </p>
       <form name="form" action="/form" method="get" onsubmit="return test()">
         <div>
-          <b>GitHub</b> User Name: <br>
+          <b>GitHub</b> User ID: <br>
           <input type="text" name="github" id="github" required="required" />
         </div>
         <div>
-          <button type="submit" onclick="showPDF()">submit</button>
+          <button type="submit" class="btn btn-dark" onclick="showPDF()">submit</button>
         </div>
-        <div id="pdf" style="display:none;">
+
         <br>
-        <button><a href="/pdf"> PDF </a></button>
-        <button><a href="/"> Return </a></button>
+        <div id="pdf" style="display:none;" class="btn-group" role="group" aria-label="Basic example">
+          <button type="button" class="btn btn-outline-dark"><a href="/pdf" > PDF </a></button>
+          <button type="button" class="btn btn-outline-dark"><a href="/" > Return </a></button>
         </div>
       </form>
     </div>
