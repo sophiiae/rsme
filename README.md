@@ -16,5 +16,5 @@ Try out here: [rsme](http://rsme.zhengstud.io)
 
  
 ## Swim Lane Diagram
-![swimlane](img/rsme-swimlane.jpg)
+![swimlane](img/swimlane.jpg)
 
