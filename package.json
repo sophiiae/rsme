@@ -16,7 +16,7 @@
     "pdfkit": "^0.10.0",
     "request": "^2.88.0",
     "svg-to-pdfkit": "^0.1.7",
-    "xmldom": "^0.1.27",
+    "xmldom": "^0.6.0",
     "xpath": "0.0.27"
   },
   "devDependencies": {
