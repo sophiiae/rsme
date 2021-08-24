@@ -9,11 +9,6 @@ RESTful API and OAuth2
 - The project is written in Node.js and Express.js
 - The project uses various of Node.js libraries, include request, PDFKit, xpath, xmldom,
 mustache-express, etc.
-
-Try out here: [rsme](http://rsme.zhengstud.io)
-
-<img src="img/rsme-qr.png" alt="qrcode" width="200"/>
-
  
 ## Swim Lane Diagram
 ![swimlane](img/rsme-swimlane.jpg)
